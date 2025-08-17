@@ -3,20 +3,19 @@ import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 import { useConvertLead } from '@/hooks/useConvertLead'
+import { usePersistedFilters } from '@/hooks/usePersistedFilters'
 import { Lead } from '@/types/lead.type'
 import { AlertCircle, Users, Sparkles } from 'lucide-react'
-import { useState, useEffect } from 'react'
 
 interface LeadsListProps {
 	leads: Lead[]
 	loading: boolean
 	error: string | null
 	onLeadClick: (lead: Lead) => void
-	storageKey: string
 	onConvertSuccess?: () => void
 }
 
-interface FilterState {
+interface FilterState extends Record<string, string> {
 	searchQuery: string
 	statusFilter: string
 	sortBy: string
@@ -48,8 +47,10 @@ const SORTING_FUNCTIONS = {
 
 type SortingFunctionType = keyof typeof SORTING_FUNCTIONS
 
-export function LeadsList({ leads, loading, error, onLeadClick, storageKey, onConvertSuccess }: LeadsListProps) {
-	const [filters, setFilters] = useState<FilterState>(defaultFilters)
+export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess }: LeadsListProps) {
+	const LEAD_FILTER_KEY = 'mini-seller-leads-filters'
+
+	const [filters, handleFilterChange] = usePersistedFilters(defaultFilters, LEAD_FILTER_KEY)
 	const convertLeadMutation = useConvertLead()
 
 	const filteredAndSortedLeads = leads
@@ -73,10 +74,6 @@ export function LeadsList({ leads, loading, error, onLeadClick, storageKey, onCo
 		})
 	}
 
-	function handleFilterChange(key: keyof FilterState, value: string) {
-		setFilters((prev) => ({ ...prev, [key]: value }))
-	}
-
 	function getStatusVariant(status: string) {
 		return (
 			STATUS_VARIANTS[status as StatusVariantType] ||
@@ -89,27 +86,6 @@ export function LeadsList({ leads, loading, error, onLeadClick, storageKey, onCo
 		if (score >= 60) return 'text-amber-600 dark:text-amber-400'
 		return 'text-red-600 dark:text-red-400'
 	}
-
-	useEffect(() => {
-		try {
-			const savedFilters = localStorage.getItem(storageKey)
-			if (savedFilters) {
-				setFilters(JSON.parse(savedFilters))
-			}
-		} catch (err) {
-			// eslint-disable-next-line no-console
-			console.warn('Failed to load saved filters:', err)
-		}
-	}, [storageKey])
-
-	useEffect(() => {
-		try {
-			localStorage.setItem(storageKey, JSON.stringify(filters))
-		} catch (err) {
-			// eslint-disable-next-line no-console
-			console.warn('Failed to save filters:', err)
-		}
-	}, [filters, storageKey])
 
 	if (loading) {
 		return (

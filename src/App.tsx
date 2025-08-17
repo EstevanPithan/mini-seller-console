@@ -10,33 +10,14 @@ import { Lead } from './types/lead.type'
 import { Users, Target } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
 
-const STORAGE_KEYS = {
-	ACTIVE_TAB: 'mini-seller-active-tab',
-	LEADS_FILTERS: 'mini-seller-leads-filters',
-	OPPORTUNITIES_FILTERS: 'mini-seller-opportunities-filters',
-}
-
 export default function App() {
+	const ACTIVE_TAB_KEY = 'mini-seller-active-tab'
+
 	const { data: leads = [], isLoading: leadsLoading, error: leadsError } = useLeads()
 	const { data: opportunities = [], isLoading: opportunitiesLoading } = useOpportunities()
 
 	const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
 	const [activeTab, setActiveTab] = useState('leads')
-
-	useEffect(() => {
-		const savedTab = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB)
-		if (savedTab) {
-			setActiveTab(savedTab)
-		}
-	}, [])
-
-	useEffect(() => {
-		localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab)
-	}, [activeTab])
-
-	const handleLeadClick = useCallback((lead: Lead) => {
-		setSelectedLead(lead)
-	}, [])
 
 	const handleConvertSuccess = useCallback(() => {
 		if (selectedLead) {
@@ -44,6 +25,17 @@ export default function App() {
 		}
 		setActiveTab('opportunities')
 	}, [selectedLead])
+
+	useEffect(() => {
+		const savedTab = localStorage.getItem(ACTIVE_TAB_KEY)
+		if (savedTab) {
+			setActiveTab(savedTab)
+		}
+	}, [])
+
+	useEffect(() => {
+		localStorage.setItem(ACTIVE_TAB_KEY, activeTab)
+	}, [activeTab])
 
 	return (
 		<div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -86,9 +78,8 @@ export default function App() {
 							leads={leads}
 							loading={leadsLoading}
 							error={leadsError?.message || null}
-							onLeadClick={handleLeadClick}
+							onLeadClick={(lead) => setSelectedLead(lead)}
 							onConvertSuccess={handleConvertSuccess}
-							storageKey={STORAGE_KEYS.LEADS_FILTERS}
 						/>
 					</TabsContent>
 
@@ -99,7 +90,6 @@ export default function App() {
 						<OpportunitiesList
 							opportunities={opportunities}
 							loading={opportunitiesLoading}
-							storageKey={STORAGE_KEYS.OPPORTUNITIES_FILTERS}
 						/>
 					</TabsContent>
 				</Tabs>

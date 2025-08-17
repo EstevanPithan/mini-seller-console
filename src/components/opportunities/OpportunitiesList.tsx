@@ -1,17 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 import { OpportunitiesSearchAndFilter } from './OpportunitiesSearchAndFilter'
+import { usePersistedFilters } from '@/hooks/usePersistedFilters'
 import { Opportunity } from '@/types/opportunity.type'
 import { TrendingUp, Target } from 'lucide-react'
-import { useState, useEffect } from 'react'
 
 interface OpportunitiesListProps {
 	opportunities: Opportunity[]
 	loading?: boolean
-	storageKey: string
 }
 
-interface FilterState {
+interface FilterState extends Record<string, string> {
 	searchQuery: string
 	stageFilter: string
 	sortBy: string
@@ -46,8 +45,10 @@ const STAGE_VARIANTS = {
 
 type StageVariantType = keyof typeof STAGE_VARIANTS
 
-export function OpportunitiesList({ opportunities, loading = false, storageKey }: OpportunitiesListProps) {
-	const [filters, setFilters] = useState<FilterState>(defaultFilters)
+export function OpportunitiesList({ opportunities, loading = false }: OpportunitiesListProps) {
+	const OPPORTUNITIES_FILTER_KEY = 'mini-seller-opportunities-filters'
+
+	const [filters, handleFilterChange] = usePersistedFilters(defaultFilters, OPPORTUNITIES_FILTER_KEY)
 
 	const filteredAndSortedOpportunities = opportunities
 		.filter((opp) => {
@@ -61,10 +62,6 @@ export function OpportunitiesList({ opportunities, loading = false, storageKey }
 			const sortFunction = SORTING_FUNCTIONS[filters.sortBy as SortingFunctionType]
 			return sortFunction ? sortFunction(a, b) : 0
 		})
-
-	function handleFilterChange(key: keyof FilterState, value: string) {
-		setFilters((prev) => ({ ...prev, [key]: value }))
-	}
 
 	function getStageVariant(stage: string) {
 		return (
@@ -85,27 +82,6 @@ export function OpportunitiesList({ opportunities, loading = false, storageKey }
 	function getTotalValue() {
 		return filteredAndSortedOpportunities.reduce((sum, opp) => sum + (opp.amount || 0), 0)
 	}
-
-	useEffect(() => {
-		try {
-			const savedFilters = localStorage.getItem(storageKey)
-			if (savedFilters) {
-				setFilters(JSON.parse(savedFilters))
-			}
-		} catch (err) {
-			// eslint-disable-next-line no-console
-			console.warn('Failed to load saved filters:', err)
-		}
-	}, [storageKey])
-
-	useEffect(() => {
-		try {
-			localStorage.setItem(storageKey, JSON.stringify(filters))
-		} catch (err) {
-			// eslint-disable-next-line no-console
-			console.warn('Failed to save filters:', err)
-		}
-	}, [filters, storageKey])
 
 	if (loading) {
 		return (
