@@ -1,6 +1,6 @@
-import { Card } from './ui/card'
-import { Input } from './ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Card } from '../ui/card'
+import { Input } from '../ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Search, Filter, SortDesc } from 'lucide-react'
 
 interface OpportunitiesSearchAndFilterProps {

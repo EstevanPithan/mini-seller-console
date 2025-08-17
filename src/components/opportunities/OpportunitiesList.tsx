@@ -1,11 +1,11 @@
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Skeleton } from '../ui/skeleton'
 import { OpportunitiesSearchAndFilter } from './OpportunitiesSearchAndFilter'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Skeleton } from './ui/skeleton'
 import { Opportunity } from '@/types/opportunity.type'
 import { TrendingUp, Target } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
-interface OpportunitiesTableProps {
+interface OpportunitiesListProps {
 	opportunities: Opportunity[]
 	loading?: boolean
 	storageKey: string
@@ -23,7 +23,7 @@ const defaultFilters: FilterState = {
 	sortBy: 'amount-desc',
 }
 
-export function OpportunitiesTable({ opportunities, loading = false, storageKey }: OpportunitiesTableProps) {
+export function OpportunitiesList({ opportunities, loading = false, storageKey }: OpportunitiesListProps) {
 	const [filters, setFilters] = useState<FilterState>(defaultFilters)
 
 	const filteredAndSortedOpportunities = opportunities

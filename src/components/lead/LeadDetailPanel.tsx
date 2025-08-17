@@ -1,11 +1,11 @@
-import { Lead } from '../App'
-import { Alert, AlertDescription } from './ui/alert'
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Input } from './ui/input'
-import { Label } from './ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Alert, AlertDescription } from '../ui/alert'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Lead } from '@/types/lead.type'
 import { X, Mail, Building, Globe, TrendingUp, Save, AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 
@@ -42,7 +42,7 @@ export function LeadDetailPanel({ lead, isOpen, onClose, onSave }: LeadDetailPan
 			await new Promise((resolve) => setTimeout(resolve, 1000))
 			onSave(editedLead)
 			setIsEditing(false)
-		} catch (err) {
+		} catch {
 			setError('Failed to save changes. Please try again.')
 		} finally {
 			setSaving(false)
@@ -168,7 +168,9 @@ export function LeadDetailPanel({ lead, isOpen, onClose, onSave }: LeadDetailPan
 											id="email"
 											type="email"
 											value={editedLead.email}
-											onChange={(e) => setEditedLead({ ...editedLead, email: e.target.value })}
+											onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+												setEditedLead({ ...editedLead, email: e.target.value })
+											}
 											className="mt-1"
 										/>
 									:	<p className="mt-1 flex items-center gap-2">
@@ -183,7 +185,9 @@ export function LeadDetailPanel({ lead, isOpen, onClose, onSave }: LeadDetailPan
 									{isEditing ?
 										<Select
 											value={editedLead.status}
-											onValueChange={(value) => setEditedLead({ ...editedLead, status: value as Lead['status'] })}
+											onValueChange={(value: string) =>
+												setEditedLead({ ...editedLead, status: value as Lead['status'] })
+											}
 										>
 											<SelectTrigger className="mt-1">
 												<SelectValue />
