@@ -22,9 +22,11 @@ const getLeadsResponseSchema = z.object({
 export type GetLeadsResponse = z.infer<typeof getLeadsResponseSchema>
 
 export async function getLeads() {
-	// //If ther was a backend, i would call here
+	// //If there was a backend, i would call here
 	// const response = await api.get('/leads')
+	await new Promise((resolve) => setTimeout(resolve, 1000))
 
 	const response = getLeadsReponseMock
-	return getLeadsResponseSchema.parse(response)
+	const validatedResponse = getLeadsResponseSchema.parse(response)
+	return validatedResponse.data
 }

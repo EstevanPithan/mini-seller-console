@@ -21,9 +21,11 @@ const getOpportunitiesResponseSchema = z.object({
 export type GetOpportunitiesResponse = z.infer<typeof getOpportunitiesResponseSchema>
 
 export async function getOpportunities() {
-	// //If ther was a backend, i would call here
+	// //If there was a backend, i would call here
 	// const response = await api.get('/opportunities')
 
+	await new Promise((resolve) => setTimeout(resolve, 1000))
 	const response = getOpportunitiesReponseMock
-	return getOpportunitiesResponseSchema.parse(response)
+	const validatedResponse = getOpportunitiesResponseSchema.parse(response)
+	return validatedResponse.data
 }

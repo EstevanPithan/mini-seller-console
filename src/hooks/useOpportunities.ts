@@ -7,6 +7,6 @@ export function useOpportunities() {
 	return useQuery({
 		queryKey: OPPORTUNITIES_QUERY_KEY,
 		queryFn: getOpportunities,
-		select: (data) => data.data || [],
+		select: (data) => data || [],
 	})
 }

@@ -7,6 +7,6 @@ export function useLeads() {
 	return useQuery({
 		queryKey: LEADS_QUERY_KEY,
 		queryFn: getLeads,
-		select: (data) => data.data || [],
+		select: (data) => data || [],
 	})
 }
