@@ -26,5 +26,5 @@ export async function getLeads() {
 	// const response = await api.get('/leads')
 
 	const response = getLeadsReponseMock
-	return getLeadsResponseSchema.parse(response.data)
+	return getLeadsResponseSchema.parse(response)
 }

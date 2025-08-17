@@ -25,5 +25,5 @@ export async function getOpportunities() {
 	// const response = await api.get('/opportunities')
 
 	const response = getOpportunitiesReponseMock
-	return getOpportunitiesResponseSchema.parse(response.data)
+	return getOpportunitiesResponseSchema.parse(response)
 }
