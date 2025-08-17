@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 export function usePersistedFilters<T extends Record<string, string>>(
 	defaultFilters: T,
 	storageKey: string,
-): [T, (key: keyof T, value: string) => void, (newFilters: T) => void] {
+): [T, (key: keyof T, value: string) => void, (newFilters: T) => void, () => void] {
 	const [filters, setFilters] = useState<T>(() => {
 		try {
 			const saved = localStorage.getItem(storageKey)
@@ -22,6 +22,10 @@ export function usePersistedFilters<T extends Record<string, string>>(
 		setFilters(newFilters)
 	}
 
+	function resetFilters() {
+		setFilters(defaultFilters)
+	}
+
 	useEffect(() => {
 		try {
 			localStorage.setItem(storageKey, JSON.stringify(filters))
@@ -30,5 +34,5 @@ export function usePersistedFilters<T extends Record<string, string>>(
 		}
 	}, [filters, storageKey])
 
-	return [filters, updateFilter, setAllFilters]
+	return [filters, updateFilter, setAllFilters, resetFilters]
 }
