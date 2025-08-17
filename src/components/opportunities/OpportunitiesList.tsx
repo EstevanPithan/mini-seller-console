@@ -48,7 +48,7 @@ type StageVariantType = keyof typeof STAGE_VARIANTS
 export function OpportunitiesList({ opportunities, loading = false }: OpportunitiesListProps) {
 	const OPPORTUNITIES_FILTER_KEY = 'mini-seller-opportunities-filters'
 
-	const [filters, handleFilterChange] = usePersistedFilters(defaultFilters, OPPORTUNITIES_FILTER_KEY)
+	const [filters, handleFilterChange, , resetFilters] = usePersistedFilters(defaultFilters, OPPORTUNITIES_FILTER_KEY)
 
 	const filteredAndSortedOpportunities = opportunities
 		.filter((opp) => {
@@ -116,6 +116,7 @@ export function OpportunitiesList({ opportunities, loading = false }: Opportunit
 				onStageFilterChange={(value) => handleFilterChange('stageFilter', value)}
 				sortBy={filters.sortBy}
 				onSortChange={(value) => handleFilterChange('sortBy', value)}
+				onClearFilters={resetFilters}
 			/>
 
 			<Card className="border-0 bg-gradient-to-br from-white to-slate-50 shadow-lg dark:from-slate-900 dark:to-slate-800">

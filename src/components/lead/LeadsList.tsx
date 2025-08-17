@@ -50,7 +50,7 @@ type SortingFunctionType = keyof typeof SORTING_FUNCTIONS
 export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess }: LeadsListProps) {
 	const LEAD_FILTER_KEY = 'mini-seller-leads-filters'
 
-	const [filters, handleFilterChange] = usePersistedFilters(defaultFilters, LEAD_FILTER_KEY)
+	const [filters, handleFilterChange, , resetFilters] = usePersistedFilters(defaultFilters, LEAD_FILTER_KEY)
 	const convertLeadMutation = useConvertLead()
 
 	const filteredAndSortedLeads = leads
@@ -135,6 +135,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 				onStatusFilterChange={(value) => handleFilterChange('statusFilter', value)}
 				sortBy={filters.sortBy}
 				onSortChange={(value) => handleFilterChange('sortBy', value)}
+				onClearFilters={resetFilters}
 			/>
 
 			<Card className="border-0 bg-gradient-to-br from-white to-slate-50 shadow-lg dark:from-slate-900 dark:to-slate-800">

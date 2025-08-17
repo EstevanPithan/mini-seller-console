@@ -1,7 +1,8 @@
+import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { Input } from '../ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { Search, Filter, SortDesc } from 'lucide-react'
+import { Search, Filter, SortDesc, X } from 'lucide-react'
 
 interface OpportunitiesSearchAndFilterProps {
 	searchQuery: string
@@ -10,6 +11,7 @@ interface OpportunitiesSearchAndFilterProps {
 	onStageFilterChange: (stage: string) => void
 	sortBy: string
 	onSortChange: (sort: string) => void
+	onClearFilters?: () => void
 }
 
 export function OpportunitiesSearchAndFilter({
@@ -19,6 +21,7 @@ export function OpportunitiesSearchAndFilter({
 	onStageFilterChange,
 	sortBy,
 	onSortChange,
+	onClearFilters,
 }: OpportunitiesSearchAndFilterProps) {
 	return (
 		<Card className="border-0 bg-gradient-to-br from-white to-slate-50 shadow-lg dark:from-slate-900 dark:to-slate-800">
@@ -94,6 +97,18 @@ export function OpportunitiesSearchAndFilter({
 								<SelectItem value="stage-asc">Stage</SelectItem>
 							</SelectContent>
 						</Select>
+
+						{onClearFilters && (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={onClearFilters}
+								className="flex items-center gap-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+							>
+								<X className="h-4 w-4" />
+								Clear Filters
+							</Button>
+						)}
 					</div>
 				</div>
 			</div>
