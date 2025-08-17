@@ -2,6 +2,7 @@ import { SearchAndFilter } from '../SearchAndFilter'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
+import { useConvertLead } from '@/hooks/useConvertLead'
 import { Lead } from '@/types/lead.type'
 import { AlertCircle, Users, Sparkles } from 'lucide-react'
 import { useState, useEffect } from 'react'
@@ -11,8 +12,8 @@ interface LeadsListProps {
 	loading: boolean
 	error: string | null
 	onLeadClick: (lead: Lead) => void
-	onConvertLead: (lead: Lead) => void
 	storageKey: string
+	onConvertSuccess?: () => void
 }
 
 interface FilterState {
@@ -47,8 +48,47 @@ const SORTING_FUNCTIONS = {
 
 type SortingFunctionType = keyof typeof SORTING_FUNCTIONS
 
-export function LeadsList({ leads, loading, error, onLeadClick, onConvertLead, storageKey }: LeadsListProps) {
+export function LeadsList({ leads, loading, error, onLeadClick, storageKey, onConvertSuccess }: LeadsListProps) {
 	const [filters, setFilters] = useState<FilterState>(defaultFilters)
+	const convertLeadMutation = useConvertLead()
+
+	const filteredAndSortedLeads = leads
+		.filter((lead) => {
+			const matchesSearch =
+				lead.name.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+				lead.company.toLowerCase().includes(filters.searchQuery.toLowerCase())
+			const matchesStatus = filters.statusFilter === 'all' || lead.status === filters.statusFilter
+			return matchesSearch && matchesStatus
+		})
+		.sort((a, b) => {
+			const sortFunction = SORTING_FUNCTIONS[filters.sortBy as SortingFunctionType]
+			return sortFunction ? sortFunction(a, b) : 0
+		})
+
+	function handleConvertLead(lead: Lead) {
+		convertLeadMutation.mutate(lead, {
+			onSuccess: () => {
+				onConvertSuccess?.()
+			},
+		})
+	}
+
+	function handleFilterChange(key: keyof FilterState, value: string) {
+		setFilters((prev) => ({ ...prev, [key]: value }))
+	}
+
+	function getStatusVariant(status: string) {
+		return (
+			STATUS_VARIANTS[status as StatusVariantType] ||
+			'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600'
+		)
+	}
+
+	function getScoreColor(score: number) {
+		if (score >= 80) return 'text-emerald-600 dark:text-emerald-400'
+		if (score >= 60) return 'text-amber-600 dark:text-amber-400'
+		return 'text-red-600 dark:text-red-400'
+	}
 
 	useEffect(() => {
 		try {
@@ -70,36 +110,6 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertLead, s
 			console.warn('Failed to save filters:', err)
 		}
 	}, [filters, storageKey])
-
-	const filteredAndSortedLeads = leads
-		.filter((lead) => {
-			const matchesSearch =
-				lead.name.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-				lead.company.toLowerCase().includes(filters.searchQuery.toLowerCase())
-			const matchesStatus = filters.statusFilter === 'all' || lead.status === filters.statusFilter
-			return matchesSearch && matchesStatus
-		})
-		.sort((a, b) => {
-			const sortFunction = SORTING_FUNCTIONS[filters.sortBy as SortingFunctionType]
-			return sortFunction ? sortFunction(a, b) : 0
-		})
-
-	function handleFilterChange(key: keyof FilterState, value: string) {
-		setFilters((prev) => ({ ...prev, [key]: value }))
-	}
-
-	function getStatusVariant(status: string) {
-		return (
-			STATUS_VARIANTS[status as StatusVariantType] ||
-			'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600'
-		)
-	}
-
-	function getScoreColor(score: number) {
-		if (score >= 80) return 'text-emerald-600 dark:text-emerald-400'
-		if (score >= 60) return 'text-amber-600 dark:text-amber-400'
-		return 'text-red-600 dark:text-red-400'
-	}
 
 	if (loading) {
 		return (
@@ -241,7 +251,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertLead, s
 													size="sm"
 													onClick={(e) => {
 														e.stopPropagation()
-														onConvertLead(lead)
+														handleConvertLead(lead)
 													}}
 													disabled={lead.status === 'unqualified'}
 													className="w-full border-0 bg-gradient-to-r from-indigo-500 to-purple-600 shadow-md transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-lg"
@@ -292,7 +302,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertLead, s
 													size="sm"
 													onClick={(e) => {
 														e.stopPropagation()
-														onConvertLead(lead)
+														handleConvertLead(lead)
 													}}
 													disabled={lead.status === 'unqualified'}
 													className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
