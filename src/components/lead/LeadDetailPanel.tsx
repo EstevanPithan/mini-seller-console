@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { useUpdateLead } from '@/hooks/useUpdateLead'
 import { Lead } from '@/types/lead.type'
 import { X, Mail, Building, Globe, TrendingUp, Save, AlertCircle } from 'lucide-react'
 import { useState } from 'react'
@@ -13,21 +14,29 @@ interface LeadDetailPanelProps {
 	lead: Lead
 	isOpen: boolean
 	onClose: () => void
-	onSave: (updatedLead: Lead) => void
 }
 
-export function LeadDetailPanel({ lead, isOpen, onClose, onSave }: LeadDetailPanelProps) {
+const STATUS_VARIANTS = {
+	new: 'default' as const,
+	contacted: 'secondary' as const,
+	qualified: 'outline' as const,
+	unqualified: 'destructive' as const,
+}
+
+type StatusVariantType = keyof typeof STATUS_VARIANTS
+
+export function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPanelProps) {
 	const [editedLead, setEditedLead] = useState<Lead>(lead)
 	const [isEditing, setIsEditing] = useState(false)
-	const [isSaving, setSaving] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+	const updateLeadMutation = useUpdateLead()
 
-	const validateEmail = (email: string) => {
+	function validateEmail(email: string) {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 		return emailRegex.test(email)
 	}
 
-	const handleSave = async () => {
+	function handleSave() {
 		setError(null)
 
 		if (!validateEmail(editedLead.email)) {
@@ -35,42 +44,28 @@ export function LeadDetailPanel({ lead, isOpen, onClose, onSave }: LeadDetailPan
 			return
 		}
 
-		setSaving(true)
-
-		// Simulate API call
-		try {
-			await new Promise((resolve) => setTimeout(resolve, 1000))
-			onSave(editedLead)
-			setIsEditing(false)
-		} catch {
-			setError('Failed to save changes. Please try again.')
-		} finally {
-			setSaving(false)
-		}
+		updateLeadMutation.mutate(editedLead, {
+			onSuccess: (updatedLead) => {
+				setEditedLead(updatedLead)
+				setIsEditing(false)
+			},
+			onError: () => {
+				setError('Failed to save changes. Please try again.')
+			},
+		})
 	}
 
-	const handleCancel = () => {
+	function handleCancel() {
 		setEditedLead(lead)
 		setIsEditing(false)
 		setError(null)
 	}
 
-	const getStatusVariant = (status: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
-		switch (status) {
-			case 'new':
-				return 'default'
-			case 'contacted':
-				return 'secondary'
-			case 'qualified':
-				return 'outline'
-			case 'unqualified':
-				return 'destructive'
-			default:
-				return 'default'
-		}
+	function getStatusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+		return STATUS_VARIANTS[status as StatusVariantType] || 'default'
 	}
 
-	const getScoreColor = (score: number) => {
+	function getScoreColor(score: number) {
 		if (score >= 80) return 'text-green-600'
 		if (score >= 60) return 'text-yellow-600'
 		return 'text-red-600'
@@ -214,16 +209,16 @@ export function LeadDetailPanel({ lead, isOpen, onClose, onSave }: LeadDetailPan
 									<div className="flex gap-2 pt-4">
 										<Button
 											onClick={handleSave}
-											disabled={isSaving}
+											disabled={updateLeadMutation.isPending}
 											className="flex-1"
 										>
 											<Save className="mr-2 h-4 w-4" />
-											{isSaving ? 'Saving...' : 'Save Changes'}
+											{updateLeadMutation.isPending ? 'Saving...' : 'Save Changes'}
 										</Button>
 										<Button
 											variant="outline"
 											onClick={handleCancel}
-											disabled={isSaving}
+											disabled={updateLeadMutation.isPending}
 										>
 											Cancel
 										</Button>

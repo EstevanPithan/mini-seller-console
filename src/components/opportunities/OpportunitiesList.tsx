@@ -23,6 +23,29 @@ const defaultFilters: FilterState = {
 	sortBy: 'amount-desc',
 }
 
+const SORTING_FUNCTIONS = {
+	'amount-desc': (a: Opportunity, b: Opportunity) => (b.amount || 0) - (a.amount || 0),
+	'amount-asc': (a: Opportunity, b: Opportunity) => (a.amount || 0) - (b.amount || 0),
+	'name-asc': (a: Opportunity, b: Opportunity) => a.name.localeCompare(b.name),
+	'account-asc': (a: Opportunity, b: Opportunity) => a.accountName.localeCompare(b.accountName),
+	'stage-asc': (a: Opportunity, b: Opportunity) => a.stage.localeCompare(b.stage),
+} as const
+
+type SortingFunctionType = keyof typeof SORTING_FUNCTIONS
+
+const STAGE_VARIANTS = {
+	discovery: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800',
+	proposal:
+		'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800',
+	negotiation:
+		'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800',
+	'closed-won':
+		'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800',
+	'closed-lost': 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800',
+} as const
+
+type StageVariantType = keyof typeof STAGE_VARIANTS
+
 export function OpportunitiesList({ opportunities, loading = false, storageKey }: OpportunitiesListProps) {
 	const [filters, setFilters] = useState<FilterState>(defaultFilters)
 
@@ -35,20 +58,8 @@ export function OpportunitiesList({ opportunities, loading = false, storageKey }
 			return matchesSearch && matchesStage
 		})
 		.sort((a, b) => {
-			switch (filters.sortBy) {
-				case 'amount-desc':
-					return (b.amount || 0) - (a.amount || 0)
-				case 'amount-asc':
-					return (a.amount || 0) - (b.amount || 0)
-				case 'name-asc':
-					return a.name.localeCompare(b.name)
-				case 'account-asc':
-					return a.accountName.localeCompare(b.accountName)
-				case 'stage-asc':
-					return a.stage.localeCompare(b.stage)
-				default:
-					return 0
-			}
+			const sortFunction = SORTING_FUNCTIONS[filters.sortBy as SortingFunctionType]
+			return sortFunction ? sortFunction(a, b) : 0
 		})
 
 	function handleFilterChange(key: keyof FilterState, value: string) {
@@ -56,20 +67,10 @@ export function OpportunitiesList({ opportunities, loading = false, storageKey }
 	}
 
 	function getStageVariant(stage: string) {
-		switch (stage.toLowerCase()) {
-			case 'discovery':
-				return 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800'
-			case 'proposal':
-				return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800'
-			case 'negotiation':
-				return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800'
-			case 'closed-won':
-				return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
-			case 'closed-lost':
-				return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800'
-			default:
-				return 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600'
-		}
+		return (
+			STAGE_VARIANTS[stage.toLowerCase() as StageVariantType] ||
+			'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600'
+		)
 	}
 
 	function formatAmount(amount?: number | null) {

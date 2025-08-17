@@ -27,6 +27,26 @@ const defaultFilters: FilterState = {
 	sortBy: 'score-desc',
 }
 
+const STATUS_VARIANTS = {
+	new: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800',
+	contacted:
+		'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800',
+	qualified:
+		'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800',
+	unqualified: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800',
+} as const
+
+type StatusVariantType = keyof typeof STATUS_VARIANTS
+
+const SORTING_FUNCTIONS = {
+	'score-desc': (a: Lead, b: Lead) => b.score - a.score,
+	'score-asc': (a: Lead, b: Lead) => a.score - b.score,
+	'name-asc': (a: Lead, b: Lead) => a.name.localeCompare(b.name),
+	'company-asc': (a: Lead, b: Lead) => a.company.localeCompare(b.company),
+} as const
+
+type SortingFunctionType = keyof typeof SORTING_FUNCTIONS
+
 export function LeadsList({ leads, loading, error, onLeadClick, onConvertLead, storageKey }: LeadsListProps) {
 	const [filters, setFilters] = useState<FilterState>(defaultFilters)
 
@@ -60,18 +80,8 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertLead, s
 			return matchesSearch && matchesStatus
 		})
 		.sort((a, b) => {
-			switch (filters.sortBy) {
-				case 'score-desc':
-					return b.score - a.score
-				case 'score-asc':
-					return a.score - b.score
-				case 'name-asc':
-					return a.name.localeCompare(b.name)
-				case 'company-asc':
-					return a.company.localeCompare(b.company)
-				default:
-					return 0
-			}
+			const sortFunction = SORTING_FUNCTIONS[filters.sortBy as SortingFunctionType]
+			return sortFunction ? sortFunction(a, b) : 0
 		})
 
 	function handleFilterChange(key: keyof FilterState, value: string) {
@@ -79,18 +89,10 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertLead, s
 	}
 
 	function getStatusVariant(status: string) {
-		switch (status) {
-			case 'new':
-				return 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800'
-			case 'contacted':
-				return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800'
-			case 'qualified':
-				return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
-			case 'unqualified':
-				return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800'
-			default:
-				return 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600'
-		}
+		return (
+			STATUS_VARIANTS[status as StatusVariantType] ||
+			'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600'
+		)
 	}
 
 	function getScoreColor(score: number) {
