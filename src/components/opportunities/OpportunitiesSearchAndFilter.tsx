@@ -37,73 +37,74 @@ export function OpportunitiesSearchAndFilter({
 						/>
 					</div>
 
-					<div className="flex gap-2">
-						<Select
-							value={stageFilter}
-							onValueChange={onStageFilterChange}
-						>
-							<SelectTrigger className="w-[140px] border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800">
-								<Filter className="mr-2 h-4 w-4 text-indigo-500 dark:text-indigo-400" />
-								<SelectValue placeholder="Filter stage" />
-							</SelectTrigger>
-							<SelectContent className="border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800">
-								<SelectItem value="all">All Stages</SelectItem>
-								<SelectItem
-									value="discovery"
-									className="text-blue-700 dark:text-blue-300"
-								>
-									Discovery
-								</SelectItem>
-								<SelectItem
-									value="proposal"
-									className="text-purple-700 dark:text-purple-300"
-								>
-									Proposal
-								</SelectItem>
-								<SelectItem
-									value="negotiation"
-									className="text-amber-700 dark:text-amber-300"
-								>
-									Negotiation
-								</SelectItem>
-								<SelectItem
-									value="closed-won"
-									className="text-emerald-700 dark:text-emerald-300"
-								>
-									Closed Won
-								</SelectItem>
-								<SelectItem
-									value="closed-lost"
-									className="text-red-700 dark:text-red-300"
-								>
-									Closed Lost
-								</SelectItem>
-							</SelectContent>
-						</Select>
+					<div className="flex flex-col gap-2 sm:flex-row">
+						<div className="flex gap-2">
+							<Select
+								value={stageFilter}
+								onValueChange={onStageFilterChange}
+							>
+								<SelectTrigger className="w-full min-w-[140px] border-slate-300 bg-white sm:w-[140px] dark:border-slate-600 dark:bg-slate-800">
+									<Filter className="mr-2 h-4 w-4 text-indigo-500 dark:text-indigo-400" />
+									<SelectValue placeholder="Filter stage" />
+								</SelectTrigger>
+								<SelectContent className="border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800">
+									<SelectItem value="all">All Stages</SelectItem>
+									<SelectItem
+										value="discovery"
+										className="text-blue-700 dark:text-blue-300"
+									>
+										Discovery
+									</SelectItem>
+									<SelectItem
+										value="proposal"
+										className="text-purple-700 dark:text-purple-300"
+									>
+										Proposal
+									</SelectItem>
+									<SelectItem
+										value="negotiation"
+										className="text-amber-700 dark:text-amber-300"
+									>
+										Negotiation
+									</SelectItem>
+									<SelectItem
+										value="closed-won"
+										className="text-emerald-700 dark:text-emerald-300"
+									>
+										Closed Won
+									</SelectItem>
+									<SelectItem
+										value="closed-lost"
+										className="text-red-700 dark:text-red-300"
+									>
+										Closed Lost
+									</SelectItem>
+								</SelectContent>
+							</Select>
 
-						<Select
-							value={sortBy}
-							onValueChange={onSortChange}
-						>
-							<SelectTrigger className="w-[160px] border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800">
-								<SortDesc className="mr-2 h-4 w-4 text-purple-500 dark:text-purple-400" />
-								<SelectValue placeholder="Sort by" />
-							</SelectTrigger>
-							<SelectContent className="border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800">
-								<SelectItem value="amount-desc">Amount (High to Low)</SelectItem>
-								<SelectItem value="amount-asc">Amount (Low to High)</SelectItem>
-								<SelectItem value="name-asc">Name (A-Z)</SelectItem>
-								<SelectItem value="account-asc">Account (A-Z)</SelectItem>
-								<SelectItem value="stage-asc">Stage</SelectItem>
-							</SelectContent>
-						</Select>
+							<Select
+								value={sortBy}
+								onValueChange={onSortChange}
+							>
+								<SelectTrigger className="w-full min-w-[160px] border-slate-300 bg-white sm:w-[160px] dark:border-slate-600 dark:bg-slate-800">
+									<SortDesc className="mr-2 h-4 w-4 text-purple-500 dark:text-purple-400" />
+									<SelectValue placeholder="Sort by" />
+								</SelectTrigger>
+								<SelectContent className="border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800">
+									<SelectItem value="amount-desc">Amount (High to Low)</SelectItem>
+									<SelectItem value="amount-asc">Amount (Low to High)</SelectItem>
+									<SelectItem value="name-asc">Name (A-Z)</SelectItem>
+									<SelectItem value="account-asc">Account (A-Z)</SelectItem>
+									<SelectItem value="stage-asc">Stage</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
 
 						{onClearFilters && (
 							<Button
 								variant="outline"
-								size="sm"
 								onClick={onClearFilters}
-								className="flex items-center gap-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+								className="flex w-full items-center justify-center gap-2 border-slate-300 bg-white text-slate-700 hover:cursor-pointer hover:bg-slate-50 sm:w-auto dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
 							>
 								<X className="h-4 w-4" />
 								Clear Filters
