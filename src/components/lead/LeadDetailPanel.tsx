@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useUpdateLead } from '@/hooks/useUpdateLead'
 import { Lead } from '@/types/lead.type'
 import { X, Mail, Building, Globe, TrendingUp, Save, AlertCircle } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface LeadDetailPanelProps {
 	lead: Lead
@@ -31,6 +31,10 @@ export function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPanelProps)
 	const [error, setError] = useState<string | null>(null)
 	const updateLeadMutation = useUpdateLead()
 
+	useEffect(() => {
+		setEditedLead(lead)
+	}, [lead])
+
 	function validateEmail(email: string) {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 		return emailRegex.test(email)
@@ -44,12 +48,11 @@ export function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPanelProps)
 			return
 		}
 
+		setIsEditing(false)
+
 		updateLeadMutation.mutate(editedLead, {
-			onSuccess: (updatedLead) => {
-				setEditedLead(updatedLead)
-				setIsEditing(false)
-			},
 			onError: () => {
+				setIsEditing(true)
 				setError('Failed to save changes. Please try again.')
 			},
 		})
@@ -209,16 +212,14 @@ export function LeadDetailPanel({ lead, isOpen, onClose }: LeadDetailPanelProps)
 									<div className="flex gap-2 pt-4">
 										<Button
 											onClick={handleSave}
-											disabled={updateLeadMutation.isPending}
 											className="flex-1"
 										>
 											<Save className="mr-2 h-4 w-4" />
-											{updateLeadMutation.isPending ? 'Saving...' : 'Save Changes'}
+											Save Changes
 										</Button>
 										<Button
 											variant="outline"
 											onClick={handleCancel}
-											disabled={updateLeadMutation.isPending}
 										>
 											Cancel
 										</Button>

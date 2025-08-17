@@ -36,6 +36,12 @@ export async function convertLeadToOpportunity(lead: Lead) {
 
 	await new Promise((resolve) => setTimeout(resolve, 500))
 
+	// Simulate 20% failure rate for testing optimistic updates
+	const shouldFail = Math.random() < 0.2
+	if (shouldFail) {
+		throw new Error('Network error: Failed to convert lead to opportunity')
+	}
+
 	// Mock response simulating successful conversion
 	if (lead.status === 'unqualified') {
 		throw new Error('Cannot convert unqualified leads')

@@ -9,14 +9,28 @@ export function useUpdateLead() {
 
 	return useMutation({
 		mutationFn: updateLead,
-		onSuccess: (updatedLead) => {
+		onMutate: async (updatedLead: Lead) => {
+			await queryClient.cancelQueries({ queryKey: LEADS_QUERY_KEY })
+
+			const previousLeads = queryClient.getQueryData<Lead[]>(LEADS_QUERY_KEY)
+
 			queryClient.setQueryData(LEADS_QUERY_KEY, (oldData: Lead[] = []) => {
 				return oldData.map((lead) => (lead.id === updatedLead.id ? updatedLead : lead))
 			})
+
+			return { previousLeads }
+		},
+		onSuccess: () => {
 			toast.success('Lead updated successfully')
 		},
-		onError: () => {
-			toast.error('Failed to update lead')
+		onError: (error, _updatedLead, context) => {
+			if (context?.previousLeads) {
+				queryClient.setQueryData(LEADS_QUERY_KEY, context.previousLeads)
+			}
+			toast.error(error.message || 'Failed to update lead')
+
+			// Only refetch on error to restore correct state - commented out for mocked data
+			// queryClient.invalidateQueries({ queryKey: LEADS_QUERY_KEY })
 		},
 	})
 }

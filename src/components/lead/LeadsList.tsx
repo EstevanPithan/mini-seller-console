@@ -67,11 +67,11 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 		})
 
 	function handleConvertLead(lead: Lead) {
-		convertLeadMutation.mutate(lead, {
-			onSuccess: () => {
-				onConvertSuccess?.()
-			},
-		})
+		// Optimistic behavior: immediately call success callback
+		onConvertSuccess?.()
+
+		// The hook handles all error rollback automatically
+		convertLeadMutation.mutate(lead)
 	}
 
 	function getStatusVariant(status: string) {

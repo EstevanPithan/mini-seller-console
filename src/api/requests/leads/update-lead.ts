@@ -24,6 +24,12 @@ export async function updateLead(lead: Lead): Promise<Lead> {
 	// const response = await api.put(`/leads/${lead.id}`, lead)
 	await new Promise((resolve) => setTimeout(resolve, 500))
 
+	// Simulate 20% failure rate for testing optimistic updates
+	const shouldFail = Math.random() < 0.2
+	if (shouldFail) {
+		throw new Error('Network error: Failed to update lead')
+	}
+
 	// Mock response simulating successful update
 	const response = {
 		data: lead,
