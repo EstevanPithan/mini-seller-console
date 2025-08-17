@@ -11,11 +11,11 @@ type ProvidersProps = {
 export function Providers(props: ProvidersProps) {
 	return (
 		<StrictMode>
-			<ThemeProvider>
-				<QueryProvider>
+			<QueryProvider>
+				<ThemeProvider>
 					<RouterProvider router={props.router} />
-				</QueryProvider>
-			</ThemeProvider>
+				</ThemeProvider>
+			</QueryProvider>
 		</StrictMode>
 	)
 }

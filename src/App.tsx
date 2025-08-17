@@ -1,7 +1,7 @@
 import { DashboardHeader } from './components/DashboardHeader'
-import { LeadDetailPanel } from './components/LeadDetailPanel'
-import { LeadsList } from './components/LeadsList'
-import { OpportunitiesTable } from './components/OpportunitiesTable'
+import { LeadDetailPanel } from './components/lead/LeadDetailPanel'
+import { LeadsList } from './components/lead/LeadsList'
+import { OpportunitiesList } from './components/opportunities/OpportunitiesList'
 import { Toaster } from './components/ui/sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
 import { useConvertLead } from './hooks/useConvertLead'
@@ -119,7 +119,7 @@ export default function App() {
 						value="opportunities"
 						className="space-y-6"
 					>
-						<OpportunitiesTable
+						<OpportunitiesList
 							opportunities={opportunities}
 							loading={opportunitiesLoading}
 							storageKey={STORAGE_KEYS.OPPORTUNITIES_FILTERS}
