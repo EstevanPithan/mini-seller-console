@@ -1,0 +1,61 @@
+import { GetLeadsResponse } from '../../requests/leads/get-leads'
+
+export const getLeadsReponseMock: GetLeadsResponse = {
+	data: [
+		{
+			id: '1',
+			name: 'Sarah Johnson',
+			company: 'TechCorp Inc.',
+			email: 'sarah.johnson@techcorp.com',
+			source: 'Website',
+			score: 85,
+			status: 'qualified',
+		},
+		{
+			id: '2',
+			name: 'Michael Chen',
+			company: 'DataStream Solutions',
+			email: 'm.chen@datastream.io',
+			source: 'LinkedIn',
+			score: 72,
+			status: 'contacted',
+		},
+		{
+			id: '3',
+			name: 'Emma Rodriguez',
+			company: 'CloudFlow Systems',
+			email: 'emma@cloudflow.com',
+			source: 'Referral',
+			score: 91,
+			status: 'new',
+		},
+		{
+			id: '4',
+			name: 'David Kim',
+			company: 'InnovateLabs',
+			email: 'david.kim@innovatelabs.com',
+			source: 'Trade Show',
+			score: 68,
+			status: 'qualified',
+		},
+		{
+			id: '5',
+			name: 'Lisa Thompson',
+			company: 'NetVision Corp',
+			email: 'l.thompson@netvision.com',
+			source: 'Cold Email',
+			score: 45,
+			status: 'unqualified',
+		},
+		{
+			id: '6',
+			name: 'Alex Martinez',
+			company: 'FutureWorks Inc',
+			email: 'alex@futureworks.com',
+			source: 'Website',
+			score: 78,
+			status: 'contacted',
+		},
+	],
+	message: null,
+}
