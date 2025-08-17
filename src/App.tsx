@@ -4,10 +4,8 @@ import { LeadsList } from './components/lead/LeadsList'
 import { OpportunitiesList } from './components/opportunities/OpportunitiesList'
 import { Toaster } from './components/ui/sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
-import { useConvertLead } from './hooks/useConvertLead'
 import { useLeads } from './hooks/useLeads'
 import { useOpportunities } from './hooks/useOpportunities'
-import { useUpdateLead } from './hooks/useUpdateLead'
 import { Lead } from './types/lead.type'
 import { Users, Target } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
@@ -21,9 +19,6 @@ const STORAGE_KEYS = {
 export default function App() {
 	const { data: leads = [], isLoading: leadsLoading, error: leadsError } = useLeads()
 	const { data: opportunities = [], isLoading: opportunitiesLoading } = useOpportunities()
-
-	const updateLeadMutation = useUpdateLead()
-	const convertLeadMutation = useConvertLead()
 
 	const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
 	const [activeTab, setActiveTab] = useState('leads')
@@ -43,30 +38,12 @@ export default function App() {
 		setSelectedLead(lead)
 	}, [])
 
-	const handleLeadSave = useCallback(
-		(updatedLead: Lead) => {
-			updateLeadMutation.mutate(updatedLead, {
-				onSuccess: (lead) => {
-					setSelectedLead(lead)
-				},
-			})
-		},
-		[updateLeadMutation],
-	)
-
-	const handleConvertLead = useCallback(
-		(lead: Lead) => {
-			convertLeadMutation.mutate(lead, {
-				onSuccess: () => {
-					if (selectedLead?.id === lead.id) {
-						setSelectedLead(null)
-					}
-					setActiveTab('opportunities')
-				},
-			})
-		},
-		[convertLeadMutation, selectedLead],
-	)
+	const handleConvertSuccess = useCallback(() => {
+		if (selectedLead) {
+			setSelectedLead(null)
+		}
+		setActiveTab('opportunities')
+	}, [selectedLead])
 
 	return (
 		<div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -110,7 +87,7 @@ export default function App() {
 							loading={leadsLoading}
 							error={leadsError?.message || null}
 							onLeadClick={handleLeadClick}
-							onConvertLead={handleConvertLead}
+							onConvertSuccess={handleConvertSuccess}
 							storageKey={STORAGE_KEYS.LEADS_FILTERS}
 						/>
 					</TabsContent>
@@ -133,7 +110,6 @@ export default function App() {
 					lead={selectedLead}
 					isOpen={!!selectedLead}
 					onClose={() => setSelectedLead(null)}
-					onSave={handleLeadSave}
 				/>
 			)}
 
