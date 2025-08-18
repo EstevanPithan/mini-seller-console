@@ -1,6 +1,6 @@
 import { Button } from './ui/button'
 import { useTheme } from '@/contexts/ThemeContext'
-import { Moon, Sun, Sparkles } from 'lucide-react'
+import { Moon, Sun, Wallet } from 'lucide-react'
 
 export function DashboardHeader() {
 	const { darkMode, toggleDarkMode } = useTheme()
@@ -11,7 +11,7 @@ export function DashboardHeader() {
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-3">
 						<div className="rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 p-2 text-white shadow-lg">
-							<Sparkles className="h-6 w-6" />
+							<Wallet className="h-6 w-6" />
 						</div>
 						<div>
 							<h1 className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-2xl font-semibold text-transparent">
