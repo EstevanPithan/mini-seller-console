@@ -88,7 +88,7 @@ src/
 
 1. **Clone the repository**
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/EstevanPithan/mini-seller-console.git
    cd mini-seller-console
    ```
 
