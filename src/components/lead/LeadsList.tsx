@@ -1,7 +1,8 @@
-import { SearchAndFilter } from '../SearchAndFilter'
+import { SearchAndFilter } from '../ui/SearchAndFilter'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
+import { leadStatusOptions, leadSortOptions } from '@/config/search-filter-options'
 import { useConvertLead } from '@/hooks/useConvertLead'
 import { usePersistedFilters } from '@/hooks/usePersistedFilters'
 import { Lead } from '@/types/lead.type'
@@ -124,19 +125,25 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 	}
 
 	return (
-		<div className="space-y-6">
-			<SearchAndFilter
-				searchQuery={filters.searchQuery}
-				onSearchChange={(value) => handleFilterChange('searchQuery', value)}
-				statusFilter={filters.statusFilter}
-				onStatusFilterChange={(value) => handleFilterChange('statusFilter', value)}
-				sortBy={filters.sortBy}
-				onSortChange={(value) => handleFilterChange('sortBy', value)}
-				onClearFilters={resetFilters}
-			/>
+		<div className="flex h-full flex-col space-y-6 overflow-hidden">
+			<div className="flex-shrink-0">
+				<SearchAndFilter
+					searchQuery={filters.searchQuery}
+					onSearchChange={(value: string) => handleFilterChange('searchQuery', value)}
+					searchPlaceholder="Search by name or company..."
+					filterValue={filters.statusFilter}
+					onFilterChange={(value: string) => handleFilterChange('statusFilter', value)}
+					filterPlaceholder="Filter status"
+					filterOptions={leadStatusOptions}
+					sortBy={filters.sortBy}
+					onSortChange={(value: string) => handleFilterChange('sortBy', value)}
+					sortOptions={leadSortOptions}
+					onClearFilters={resetFilters}
+				/>
+			</div>
 
-			<Card className="border-0 bg-gradient-to-br from-white to-slate-50 shadow-lg dark:from-slate-900 dark:to-slate-800">
-				<CardHeader className="border-b border-slate-200 dark:border-slate-700">
+			<Card className="flex h-full flex-col border-0 bg-gradient-to-br from-white to-slate-50 shadow-lg dark:from-slate-900 dark:to-slate-800">
+				<CardHeader className="flex-shrink-0 border-b border-slate-200 dark:border-slate-700">
 					<CardTitle className="flex items-center gap-2">
 						<div className="rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 p-2 text-white">
 							<Users className="h-5 w-5" />
@@ -151,7 +158,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 						</div>
 					</CardTitle>
 				</CardHeader>
-				<CardContent className="p-0">
+				<CardContent className="min-h-0 flex-1 p-0">
 					{filteredAndSortedLeads.length === 0 ?
 						<div className="py-12 text-center">
 							<div className="mx-auto mb-4 w-fit rounded-full bg-slate-100 p-4 dark:bg-slate-800">
@@ -162,7 +169,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 								{leads.length === 0 ? 'No leads available' : 'Try adjusting your search or filters'}
 							</p>
 						</div>
-					:	<div className="overflow-x-auto">
+					:	<div className="h-full overflow-auto">
 							{/* Desktop Table */}
 							<div className="hidden min-w-full lg:block">
 								{/* Table Header */}

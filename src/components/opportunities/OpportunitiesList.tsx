@@ -1,9 +1,10 @@
+import { SearchAndFilter } from '../ui/SearchAndFilter'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
-import { OpportunitiesSearchAndFilter } from './OpportunitiesSearchAndFilter'
+import { opportunityStageOptions, opportunitySortOptions } from '@/config/search-filter-options'
 import { usePersistedFilters } from '@/hooks/usePersistedFilters'
 import { Opportunity } from '@/types/opportunity.type'
-import { TrendingUp, Target } from 'lucide-react'
+import { Target, TrendingUp } from 'lucide-react'
 
 interface OpportunitiesListProps {
 	opportunities: Opportunity[]
@@ -108,19 +109,25 @@ export function OpportunitiesList({ opportunities, loading = false }: Opportunit
 	}
 
 	return (
-		<div className="space-y-6">
-			<OpportunitiesSearchAndFilter
-				searchQuery={filters.searchQuery}
-				onSearchChange={(value) => handleFilterChange('searchQuery', value)}
-				stageFilter={filters.stageFilter}
-				onStageFilterChange={(value) => handleFilterChange('stageFilter', value)}
-				sortBy={filters.sortBy}
-				onSortChange={(value) => handleFilterChange('sortBy', value)}
-				onClearFilters={resetFilters}
-			/>
+		<div className="flex h-full flex-col space-y-6 overflow-hidden">
+			<div className="flex-shrink-0">
+				<SearchAndFilter
+					searchQuery={filters.searchQuery}
+					onSearchChange={(value: string) => handleFilterChange('searchQuery', value)}
+					searchPlaceholder="Search by opportunity name or account..."
+					filterValue={filters.stageFilter}
+					onFilterChange={(value: string) => handleFilterChange('stageFilter', value)}
+					filterPlaceholder="Filter stage"
+					filterOptions={opportunityStageOptions}
+					sortBy={filters.sortBy}
+					onSortChange={(value: string) => handleFilterChange('sortBy', value)}
+					sortOptions={opportunitySortOptions}
+					onClearFilters={resetFilters}
+				/>
+			</div>
 
-			<Card className="border-0 bg-gradient-to-br from-white to-slate-50 shadow-lg dark:from-slate-900 dark:to-slate-800">
-				<CardHeader className="border-b border-slate-200 dark:border-slate-700">
+			<Card className="flex h-full flex-col border-0 bg-gradient-to-br from-white to-slate-50 shadow-lg dark:from-slate-900 dark:to-slate-800">
+				<CardHeader className="flex-shrink-0 border-b border-slate-200 dark:border-slate-700">
 					<CardTitle className="flex items-center gap-2">
 						<div className="rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 p-2 text-white">
 							<Target className="h-5 w-5" />
@@ -140,7 +147,7 @@ export function OpportunitiesList({ opportunities, loading = false }: Opportunit
 						</div>
 					</CardTitle>
 				</CardHeader>
-				<CardContent className="p-0">
+				<CardContent className="min-h-0 flex-1 p-0">
 					{filteredAndSortedOpportunities.length === 0 ?
 						<div className="py-12 text-center">
 							<div className="mx-auto mb-4 w-fit rounded-full bg-slate-100 p-4 dark:bg-slate-800">
@@ -153,7 +160,7 @@ export function OpportunitiesList({ opportunities, loading = false }: Opportunit
 								:	'Try adjusting your search or filters'}
 							</p>
 						</div>
-					:	<div className="overflow-x-auto">
+					:	<div className="h-full overflow-auto">
 							{/* Desktop Table */}
 							<div className="hidden min-w-full lg:block">
 								{/* Table Header */}
