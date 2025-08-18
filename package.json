@@ -4,11 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun run src/scripts/genarate-icons-type.ts && vite",
+    "dev": "bun run vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "icons-type": "bun run src/scripts/genarate-icons-type.ts"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
