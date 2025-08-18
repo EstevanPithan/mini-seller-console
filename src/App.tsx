@@ -1,4 +1,4 @@
-import { DashboardHeader } from './components/DashboardHeader'
+import { Header } from './components/Header'
 import { LeadDetailPanel } from './components/lead/LeadDetailPanel'
 import { LeadsList } from './components/lead/LeadsList'
 import { OpportunitiesList } from './components/opportunities/OpportunitiesList'
@@ -38,14 +38,14 @@ export default function App() {
 	}, [activeTab])
 
 	return (
-		<div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-			<DashboardHeader />
+		<div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-slate-900">
+			<Header />
 
-			<main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+			<main className="mx-auto flex min-h-0 w-full max-w-[88rem] flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
 				<Tabs
 					value={activeTab}
 					onValueChange={setActiveTab}
-					className="space-y-6"
+					className="flex h-full flex-col space-y-6"
 				>
 					<TabsList className="grid w-full grid-cols-2 border border-slate-200 bg-white shadow-sm lg:w-[400px] dark:border-slate-700 dark:bg-slate-800">
 						<TabsTrigger
@@ -72,7 +72,7 @@ export default function App() {
 
 					<TabsContent
 						value="leads"
-						className="space-y-6"
+						className="min-h-0 flex-1"
 					>
 						<LeadsList
 							leads={leads}
@@ -85,7 +85,7 @@ export default function App() {
 
 					<TabsContent
 						value="opportunities"
-						className="space-y-6"
+						className="min-h-0 flex-1"
 					>
 						<OpportunitiesList
 							opportunities={opportunities}
