@@ -5,7 +5,7 @@ import { Skeleton } from '../ui/skeleton'
 import { useConvertLead } from '@/hooks/useConvertLead'
 import { usePersistedFilters } from '@/hooks/usePersistedFilters'
 import { Lead } from '@/types/lead.type'
-import { AlertCircle, Users, Sparkles } from 'lucide-react'
+import { AlertCircle, Users } from 'lucide-react'
 
 interface LeadsListProps {
 	leads: Lead[]
@@ -67,10 +67,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 		})
 
 	function handleConvertLead(lead: Lead) {
-		// Optimistic behavior: immediately call success callback
 		onConvertSuccess?.()
-
-		// The hook handles all error rollback automatically
 		convertLeadMutation.mutate(lead)
 	}
 
@@ -233,7 +230,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 													disabled={lead.status === 'unqualified'}
 													className="w-full border-0 bg-gradient-to-r from-indigo-500 to-purple-600 shadow-md transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-lg"
 												>
-													Convert
+													Convert Lead
 												</Button>
 											</div>
 										</div>
@@ -284,8 +281,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 													disabled={lead.status === 'unqualified'}
 													className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
 												>
-													<Sparkles className="mr-1 h-3 w-3" />
-													Convert
+													Convert Lead
 												</Button>
 											</div>
 										</div>
