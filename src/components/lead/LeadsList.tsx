@@ -228,7 +228,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 														handleConvertLead(lead)
 													}}
 													disabled={lead.status === 'unqualified'}
-													className="w-full border-0 bg-gradient-to-r from-indigo-500 to-purple-600 shadow-md transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-lg"
+													className="w-full border-0 bg-gradient-to-r from-indigo-500 to-purple-600 shadow-md transition-all duration-200 hover:from-indigo-600 hover:to-purple-700 hover:shadow-lg dark:text-white"
 												>
 													Convert Lead
 												</Button>
@@ -279,7 +279,7 @@ export function LeadsList({ leads, loading, error, onLeadClick, onConvertSuccess
 														handleConvertLead(lead)
 													}}
 													disabled={lead.status === 'unqualified'}
-													className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+													className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 dark:text-white"
 												>
 													Convert Lead
 												</Button>
